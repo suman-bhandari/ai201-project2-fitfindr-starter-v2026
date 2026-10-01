@@ -26,7 +26,10 @@ from utils.data_loader import load_listings
 
 
 # ── Tool 1: search_listings ───────────────────────────────────────────────────
-_STOPWORDS = {"a", "an", "the", "and", "or", "but", "if", "then", "else"}
+_STOPWORDS = {
+    "a", "an", "and", "the", "for", "or", "but", "if", "then", 
+    "else" "with", "in", "of"
+}
 
 def _keywords(text: str) -> set[str]:
     """
@@ -56,20 +59,19 @@ def _size_tokens(size: str) -> set[str]:
         an empty set.
     """
     cleaned = re.sub(r"\([^)]*\)", " ", size or "")
-    parts = [p.strip().upper() for p in cleaned.split("/")]
+    parts = [p.strip().upper for p in cleaned.split("/")]
     return {p for p in parts if p}
 
-def _size_match(wanted: str, listing_size: str) -> bool:
+def _size_matches(wanted: str, listing_size: str) -> bool:
     """
-    Return True if the listing size matches the query size, False otherwise.
-
-    Args:
-        listing_size: the size string from a listing
-        query_size:   the size string from the user's query
+    Return True if the listing size matches the query size, False otherwise.    
     """
     if not wanted:
-        return True  # no size filter, so everything matches
+        return True
     listing_tokens = _size_tokens(listing_size)
+    if any(token.startswith("ONE SIZE") for token in listing_tokens):
+        return True
+    return bool(_size_tokens(wanted) & listing_tokens)
 
 def search_listings(
     description: str,
