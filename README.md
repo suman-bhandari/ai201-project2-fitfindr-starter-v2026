@@ -40,8 +40,7 @@
 ## What This Does
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
-
-
+FitFindr takes a natural-language search request for a thrifted clothing item, optionally specifying a desired size, maximum price, or style keywords. It searches a catalog of thrift listings to find the best match and checks the item against the user's existing wardrobe. Finally, it generates a personalized outfit recommendation pairing the new find with owned clothes, accompanied by a social-media-ready caption card.
 
 ---
 
@@ -60,23 +59,35 @@
 ### `search_listings`
 
 - **What it does:**
+     Search the listings data for items matching a description, and optionally a size and a price ceiling.
 - **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
+     description (str), size (str | None), max_price (float | None)
 - **Returns:**
+     (list[dict]) A list of matching listing dicts (containing fields like id, title, description, size, price, etc.), best match first.
 - **When it has nothing:**
+     Returns an empty list when nothing matches — an empty list, not None, and not an exception.
 
 ### `suggest_outfit`
 
 - **What it does:**
+     Given a thrifted item and the user's wardrobe, suggest one or two outfits.
 - **Inputs:**
+     new_item (dict), wardrobe (dict)
 - **Returns:**
+     (str) A non-empty string containing outfit suggestions and styling advice.
 - **When it has nothing:**
+     With an empty wardrobe, return general styling advice string rather than raising an exception or returning "".
 
 ### `create_fit_card`
 
 - **What it does:**
+     Write a short caption that reads like a real post someone would post about the outfit find.
 - **Inputs:**
+     outfit (str), new_item (dict)
 - **Returns:**
+     (str) A two-to-four sentence string caption describing the fit post.
 - **When it has nothing:**
+     If outfit is empty or whitespace, return a descriptive error message string rather than raising an exception.
 
 ---
 
@@ -94,12 +105,14 @@
      function have to be real. -->
 
 **Branch rule:**
+     If `search_listings` returns an empty list, store an error message in `session["error"]` and stop execution. Otherwise, take the first listing (`results[0]`) and proceed to `suggest_outfit`.
 
 **Where it lives:** `agent.py::run_agent`
 
 **How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
-
+     regex / string splitting
 **What moves through the session:** <!-- which fields, in what order -->
+     query (str) -> listings (list[dict]) -> selected_item (dict) -> outfit_suggestion (str) -> fit_card (str)
 
 ---
 
