@@ -26,6 +26,50 @@ from utils.data_loader import load_listings
 
 
 # ── Tool 1: search_listings ───────────────────────────────────────────────────
+_STOPWORDS = {"a", "an", "the", "and", "or", "but", "if", "then", "else"}
+
+def _keywords(text: str) -> set[str]:
+    """
+    Return a set of lowercase keywords worth matching on from a string, 
+    with stopwords removed.
+
+    Args:
+        text: any string
+
+    Returns:
+        a set of lowercase words, with punctuation stripped and stopwords
+        removed. If the input is empty or whitespace, returns an empty set.
+    """
+    words = re.findall(r"[a-z0-9']+", (text or "").lower())
+    return {w for w in words if w not in _STOPWORDS and len(w) > 1}
+
+def _size_tokens(size: str) -> set[str]:
+    """
+    Return a set of lowercase tokens from a size string, with punctuation
+    stripped.
+
+    Args:
+        size: any string
+
+    Returns:
+        a set of lowercase words. If the input is empty or whitespace, returns
+        an empty set.
+    """
+    cleaned = re.sub(r"\([^)]*\)", " ", size or "")
+    parts = [p.strip().upper() for p in cleaned.split("/")]
+    return {p for p in parts if p}
+
+def _size_match(wanted: str, listing_size: str) -> bool:
+    """
+    Return True if the listing size matches the query size, False otherwise.
+
+    Args:
+        listing_size: the size string from a listing
+        query_size:   the size string from the user's query
+    """
+    if not wanted:
+        return True  # no size filter, so everything matches
+    listing_tokens = _size_tokens(listing_size)
 
 def search_listings(
     description: str,
