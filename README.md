@@ -126,7 +126,53 @@ FitFindr takes a natural-language search request for a thrifted clothing item, o
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'looking for a vintage graphic tee under $30'
+[1] parse_query
+      in:  looking for a vintage graphic tee under $30
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+      →    10 match(es)
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Hey! As your stylist, I am so excited about this Y2K butterfly baby tee. It’s a super versatile piece because …
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Channel your inner 2000s pop star with this adorable Y2K Baby Tee featuring a gorgeous butterfly print! It’s g…
+
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   Hey! As your stylist, I am so excited about this Y2K butterfly baby tee. It’s a super versatile piece because we can lean into its nostalgic 2000s roots or give it a cool-girl grunge contrast. 
+
+Here are 2 distinct outfits using pieces straight from your current wardrobe:
+
+### Outfit 1: Streetwear Y2K Contrast
+* **Top:** Y2K Butterfly Baby Tee (New Item)
+* **Bottoms:** Baggy straight-leg jeans, dark wash (#1)
+* **Shoes:** Chunky white sneakers (#7)
+* **Accessories:** Black crossbody bag (#10)
+* **Layering Option (Optional):** Black cropped zip hoodie (#5) left open.
+
+**Why this works:** 
+This outfit plays on the classic Y2K proportion-play of "tight top, baggy bottom." The fitted, cropped nature of the baby tee balances out the relaxed volume of the dark wash straight-leg jeans. Finishing it with chunky white sneakers keeps the streetwear vibe grounded and effortless, while the black crossbody bag ties the whole casual look together. 
+
+### Outfit 2: Vintage Grunge Twist
+* **Top:** Y2K Butterfly Baby Tee (New Item)
+* **Bottoms:** Wide-leg khaki trousers (#2)
+* **Outerwear:** Vintage black denim jacket (#6)
+* **Shoes:** Black combat boots (#8)
+* **Accessories:** Brown leather belt (#9)
+
+**Why this works:** 
+While butterflies and baby tees lean sweet and cottagecore, pairing them with your black combat boots and vintage black denim jacket completely transforms the vibeinto a 90s/2000s grunge-meets-minimalist aesthetic. Tucking the tee into the wide-leg khaki trousers (cinched with your brown leather belt) adds a nice touch of earth tones that grounds the black outerwear and boots. 
+
+Which direction are you feeling more today?
+
+  Fit card: Channel your inner 2000s pop star with this adorable Y2K Baby Tee featuring a gorgeous butterfly print! It’s giving major nostalgia and is super easy to style for both sweet street looks and edgy grunge fits. Grab this ultimate wardrobe staple right now on depop for just $18.0 before someone else snags it!
 
 ```
 
