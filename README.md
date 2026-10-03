@@ -227,15 +227,25 @@ Nothing beats the effortless fit of broken-in denim, and these Vintage Levi's 50
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* 
+I asked AI to review and write justifications for my target criteria, including a rule that `search_listings` must return items under `max_price` 5 out of 5 times.
+
+- *What came back:* 
+The AI helped formalize the justification, emphasizing that unlike LLM-generated output, price filtering in `search_listings` relies on deterministic Python logic (`price <= max_price`), meaning model variance does not apply and 100% reliability (5 out of 5) is the expected standard.
+
+- *What I changed:* 
+I incorporated this distinction into `criteria.md` to clearly differentiate between deterministic code filters (which require 5/5 pass rates) and LLM prompt generation steps (which allow a 4/5 pass rate due to text parsing variations).
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* 
+I asked AI to evaluate if a starter stub definition of `search_listings` satisfied the tool specification requirements.
+
+- *What came back:* 
+The AI identified that the starter stub returned a hardcoded `[]` without performing keyword parsing, price filtering, or size matching, and provided the full scoring and filtering logic.
+
+- *What I changed:* 
+Instead of using basic string substring matching for sizes (which incorrectly matched `"s"` in `"us 9"` or `"l"` in `"xl"`), I ensured size evaluation used `_size_matches()` token checking so non-matching clothes and shoes were correctly excluded from search results.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
