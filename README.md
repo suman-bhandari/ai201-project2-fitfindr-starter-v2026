@@ -134,16 +134,37 @@ $ python app.py ask '...'
 
 ```
 $ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
+[{'id': 'lst_002', 'title': 'Y2K Baby Tee — Butterfly Print', 'description': 'Super cute early 2000s baby tee with butterfly graphic. Fitted crop length. Tag says medium but fits like a small.', 'category': 'tops', 'style_tags': ['y2k', 'vintage', 'graphic tee', 'cottagecore'], 'size': 'S/M', 'condition': 'excellent', 'price': 18.0, 'colors': ['white', 'pink', 'purple'], 'brand': None, 'platform': 'depop'}, ...]
+
+```
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
+Hello! As your personal stylist, I am so excited about this new thrift find. Vintage Levi's 501s are the ultimate wardrobe holy grail—they go with literally everything. 
+
+Here are two distinct, effortlessly cool outfits using pieces straight from your current wardrobe:
+
+### Outfit 1: The Off-Duty Streetwear Look
+* **The Vibe:** Casual, cool, and perfectly balanced between fitted and oversized.
+* **The Recipe:**
+  * **Top:** **White ribbed tank top** (fitted)
+  * **Outerwear:** **Oversized grey crewneck sweatshirt** (layered casually over the shoulders or worn as your main top)
+  * **Shoes:** **Chunky white sneakers**
+  * **Accessories:** **Black crossbody bag**
+* **Why it works:** The secret to styling straight-leg vintage denim is playing with proportions. The fitted **white ribbed tank top** contrasts the relaxed, straight-leg cut of the Levi's. Throwing on the **oversized grey crewneck sweatshirt** adds that cozy, streetwear-approved ease, while the **chunky white sneakers** and **black crossbody bag** tie the whole casual, everyday uniform together.
+
+### Outfit 2: The Edgy Double-Denim Look
+* **The Vibe:** Grunge-leaning, classic Americana with a modern edge.
+* **The Recipe:**
+  * **Top:** **White ribbed tank top** as your base layer
+  * **Outerwear:** **Vintage black denim jacket**
+  * **Shoes:** **Black combat boots**
+  * **Accessories:** **Brown leather belt** & **Black crossbody bag**
+* **Why it works:** Mixing medium wash blue jeans with a **vintage black denim jacket** is a foolproof way to do double-denim without looking costume-y—the contrast in washes keeps it intentional. Tucking the **white ribbed tank top** in and defining your waist with the **brown leather belt** adds a polished touch to the rugged base. Finally, grounding the outfit with **black combat boots** leans into thatclassic grunge aesthetic, making the whole look feel sharp and tough.
 
 ```
 
 ```
-$ python -c "from tools import suggest_outfit; ..."
-
-```
-
-```
-$ python -c "from tools import create_fit_card; ..."
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless fit of broken-in denim, and these Vintage Levi's 501Jeans in a timeless medium wash are absolute perfection. I love styling them withcrisp white sneakers for that classic off-duty look. Grab this dreamy pair now over on my depop for just $38.0 before someone else snaps them up!
 
 ```
 
