@@ -419,8 +419,10 @@ full. -->
      `python run_eval.py --label after` -->
 
 **What I changed:**
+Refined the prompt in tools.py::create_fit_card to enforce a strict length limit (under 280 characters and 2 to 3 sentences), slice the incoming outfit string (outfit[:250]) to reduce token load, and mandate an engaging first-sentence hook alongside explicit ${price} and {platform} requirements.
 
 **Which failure it was meant to fix:**
+Targeted Criterion 4. In earlier evaluation, the generated fit cards were verbose (often exceeding 400 characters) and used repetitive opening clichés. The change was designed to make the fit cards concise, social-media-ready captions while ensuring the price formatting remained strictly present.
 
 ### Run Log — After
 
@@ -431,6 +433,14 @@ full. -->
 | 3.  |  |  |  |  |  |  |  |
 | 4.  |  |  |  |  |  |  |  |
 | 5.  |  |  |  |  |  |  |  |
+
+| Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
+|---|---|---|---|---|---|---|---|
+| 1. A matching query completes all three tools | 4 of 5 | FAIL | PASS | PASS | PASS | FAIL | MISSED (3/5) |
+| 2. An impossible query stops before the second tool | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 3. The item passed to suggest_outfit matches the top search result | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 4. The fit card caption mentions the price of the item | 4 of 5 | FAIL | FAIL | FAIL | FAIL | FAIL | MISSED (0/5) |
+| 5. search_listings strictly enforces the max_price filter | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
 
 **Did it help, and how do I know:**
 

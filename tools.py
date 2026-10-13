@@ -261,11 +261,11 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     this three times on the same item and get three word-for-word identical
     strings, it's one of two things, and both are near the top of `config.py`:
 
-        • CACHE_ENABLED — the adapter handed back an answer it already had
-        • TEMPERATURE   — at 0.0 the model gives the same words every time
+- CACHE_ENABLED — the adapter handed back an answer it already had
+- TEMPERATURE   — at 0.0 the model gives the same words every time
 
     TODO:
-        1. Guard against an empty or whitespace-only `outfit`.
+1. Guard against an empty or whitespace-only `outfit`.
         2. Build a prompt with the item details and the outfit.
         3. Call generate() and return the response.
 
@@ -281,19 +281,20 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
     platform = new_item.get("platform", "thrift app")
     brand = new_item.get("brand") or "unbranded"
 
-    # 2. Build prompt for social post caption
+    # 2. Build prompt for social post caption (Refined for Milestone 5)
     prompt = (
-        f"Write a short, engaging social media caption (2 to 4 sentences) about a thrift find.\n\n"
+        f"Write a short, engaging social media caption (under 280 characters total, 2 to 3 sentences) about a thrift find.\n\n"
         f"Item: {title}\n"
         f"Price: ${price}\n"
         f"Platform: {platform}\n"
         f"Brand: {brand}\n"
-        f"Outfit Details: {outfit}\n\n"
+        f"Outfit Details: {outfit[:250]}\n\n"
         f"Requirements:\n"
-        f"- Keep it strictly between 2 and 4 sentences.\n"
-        f"- Must sound like a real person posting on Instagram/Depop/TikTok.\n"
-        f"- Mention the item name, price (${price}), and platform ({platform}) exactly once.\n"
-        f"- Do NOT use hashtags."
+        f"- Length: strictly under 280 characters total and between 2 and 3 sentences.\n"
+        f"- Hook: Start with a punchy, authentic first sentence that avoids generic clichés.\n"
+        f"- Details: Explicitly state the exact price (${price}) and platform ({platform}).\n"
+        f"- Tone: Casual and conversational, like a real post on Instagram/Depop.\n"
+        f"- Output: Return ONLY the caption text. Do NOT use hashtags, markdown headers, or quotation marks."
     )
 
     # 3. Call generate and return response
