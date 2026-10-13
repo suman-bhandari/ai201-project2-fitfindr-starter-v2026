@@ -267,17 +267,47 @@ Instead of using basic string substring matching for sizes (which incorrectly ma
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. A matching query completes all three tools | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 2. An impossible query stops before the second tool | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 3. The item passed to suggest_outfit matches the top search result | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 4. The fit card caption mentions the price of the item | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
+| 5. search_listings strictly enforces the max_price filter | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
 ```
-
+Criterion 1: Matching query completes all three tools
+Produced by: agent.py::run_agent via run_eval.py::run_once (Scenario: matching query completes, Try 1)   
+Output: 
+Channel your inner early 2000s pop star with this adorable Y2K baby tee featuring a gorgeous butterfly print. It's listed on depop right now for just $18.0 and looks amazing styled with baggy denim or tailored trousers. Grab this nostalgic gem before someone else beats you to it!
+   
+Criterion 2: Impossible query stops before the second tool
+Produced by: agent.py::run_agent (_nothing_found_message) (Scenario: impossible query stops early, Try 1)   
+Output:
+Nothing in the listings matched description 'designer ballgown', size XXS, under $5.
+Things to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.
+   
+Criterion 3: Selected item matches top search result
+Produced by: agent.py::run_agent (Scenario: selected item matches top search result, Try 1)   
+Output:
+selected_item: 90s Silk Slip Dress — Floral, Midi Length ($30.0, depop)
+top search result: 90s Silk Slip Dress — Floral, Midi Length ($30.0, depop)
+trace: [3] select_item -> [4] suggest_outfit in: 90s Silk Slip Dress — Floral, Midi Length ($30.0, depop)
+   
+   
+Criterion 4: Fit card caption mentions item price
+Produced by: tools.py::create_fit_card (Scenario: fit card mentions item price, Try 1)   
+Output:
+Scored these chunky white platform sneakers on Poshmark for just $48, and I am officially obsessed. They give off major Y2K energy whether I'm styling them with baggy denim or dressing down wide-leg trousers. Honestly, they’re about to be my go-to shoe for every single outfit this season.
+   
+Criterion 5: Search respects max_price budget ceiling
+Produced by: tools.py::search_listings via MCP (Scenario: search respects max_price budget ceiling, Try 1)   
+Output:
+Query max_price ceiling: $50.0
+Returned 7 items, all under ceiling:
+- Denim Jacket — Light Wash, Cropped: $42.0 (selected)
+All 7 returned listings satisfy listing['price'] <= 50.0.
 ```
 
 ---

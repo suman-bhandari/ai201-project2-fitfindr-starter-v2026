@@ -29,11 +29,25 @@ SCENARIOS = [
         "criterion": 2,
     },
     {
-        # A user with nothing saved. One of unit 4's three failure modes.
-        "name": "empty wardrobe",
+        # Criterion 3: Item in session matches item passed to suggest_outfit
+        "name": "selected item matches top search result",
+        "query": "silk slip dress in midi length under $40",
+        "wardrobe": "example",
+        "criterion": 3,
+    },
+    {
+        # Criterion 4: Fit card caption mentions the price of the item
+        "name": "fit card mentions item price",
+        "query": "platform sneakers size 8",
+        "wardrobe": "example",
+        "criterion": 4,
+    },
+    {
+        # Criterion 5: search_listings strictly enforces the max_price filter
+        "name": "search respects max_price budget ceiling",
         "query": "denim jacket under $50",
-        "wardrobe": "empty",
-        "criterion": None,
+        "wardrobe": "example",
+        "criterion": 5,
     },
     # TODO: add what your criteria 3, 4 and 5 need.
     #
