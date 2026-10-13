@@ -332,14 +332,24 @@ All 7 returned listings satisfy listing['price'] <= 50.0.
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | A matching query completes all three tools | 4 of 5 | MET (5/5) | In all 5 tries, the agent successfully executed `parse_query`, `search_listings (via MCP)`, `select_item`, `suggest_outfit`, and `create_fit_card`, returning a populated `fit_card` string without errors or early terminations. |
+| 2 | An impossible query stops before the second tool | 5 of 5 | MET (5/5) | In all 5 tries, `search_listings (via MCP)` returned `[]` (0 matches). The deterministic early-stop branch `if not results:` fired immediately at step [3], terminating the session, returning the explanatory guidance string, and making 0 model calls. |
+| 3 | The item passed to suggest_outfit matches the top search result | 5 of 5 | MET (5/5) | For every run, `session["selected_item"]["id"]` matched the first element of `session["search_results"]` (`90s Silk Slip Dress — Floral, Midi Length`, id: 2). The step trace confirmed that the exact selected dictionary was passed into `suggest_outfit`. |
+| 4 | The fit card caption mentions the price of the item | 4 of 5 | MET (5/5) | The selected item's price was $48.0. In all 5 tries, the generated fit card explicitly included the dollar price ("$48" or "$48.0") in its social caption body. |
+| 5 | search_listings strictly enforces the max_price filter | 5 of 5 | MET (5/5) | The query specified "under $50". Across all 5 runs, all 7 returned items from the catalog had `price <= 50.0`, with the selected top item priced at $42.0. No listing exceeded the ceiling. |
 
 **Diagnoses**
+- Misses: 0 misses across 25 total trials (5/5 across all 5 criteria).
+- Were the targets set too low?
+  Yes, particularly for Criterion 1 and Criterion 4, which were both set at 4 of 5.
+  - Criterion 1 (Matching query completes):A 4 of 5 target was originally selected as a buffer for potential keyword mismatch or JSON parsing hiccups. However, because `parse_query` uses structured fallback parsing and the catalog has broad keyword overlap across tags and categories, standard queries reliably retrieve items on every attempt.
+  - Criterion 4 (Fit card mentions item price):A 4 of 5 target was chosen to account for non-deterministic model behavior. But the prompt template in `tools.py` strongly emphasizes including price and platform in the copy, which reliably steered Gemini to output the price across all 5 runs (even with temperature at 0.9 and caching off).
 
+- Criterion to tighten:
+  Criterion 4 (Fit card caption).
+  Currently, it only checks that the price string appears in the card. To make this an informative evaluative test of output quality rather than just a keyword spot-check, it should be tightened to evaluate distinct creative angles or strict length constraints:
+  
+  Tightened Criterion 4: Across 5 independent runs for the same item, the generated fit cards share no opening sentence, mention the price ($48), and remain under 280 characters — 5 of 5 tries.
 
 
 ---
