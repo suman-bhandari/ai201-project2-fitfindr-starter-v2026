@@ -327,15 +327,39 @@ that produced it:
      anyone will ever find that out. -->
 
 **Happy path**
-
+python app.py ask 'looking for a vintage graphic tee under $30' --trace
 ```
-
+[1] parse_query
+      in:  looking for a vintage graphic tee under $30
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+      →    10 match(es)
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Hey! As your stylist, I am so excited about this Y2K butterfly baby tee. It’s a super versatile piece because …
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Channel your inner 2000s pop star with this adorable Y2K Baby Tee featuring a gorgeous butterfly print! It’s g…
 ```
 
 **Empty search**
+python app.py ask 'designer ballgown size XXS under $5' --trace
 
 ```
-
+[1] parse_query
+      in:  designer ballgown size XXS under $5
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+      →    0 match(es)
+[3] branch
+      →    search returned []: stopping before suggest_outfit
 ```
 
 **On the MCP move:** <!-- what changed in your code, and whether anything

@@ -158,7 +158,12 @@ def cmd_ask(args):
                     break
                 _ask_one(query, wardrobe, args.trace)
     finally:
-        print(generate.usage())
+        try:
+            usage_info = generate.usage() if callable(generate.usage) else generate.usage
+            if usage_info:
+                print(usage_info)
+        except Exception:
+            pass
 
 
 def build_parser():
