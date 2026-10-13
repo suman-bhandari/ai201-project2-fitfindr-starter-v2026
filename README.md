@@ -443,6 +443,9 @@ Targeted Criterion 4. In earlier evaluation, the generated fit cards were verbos
 | 5. search_listings strictly enforces the max_price filter | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET(5/5) |
 
 **Did it help, and how do I know:**
+For the prompt itself, yes—whenever the model was reached, the output length dropped from ~400 characters down to punchy captions (e.g., Try 2 of Scenario 1 was 161 characters and Try 3 was 176 characters, both featuring distinct opening hooks and including $18.0 on depop).
+However, against the automated test suite, the overall run degraded due to an upstream service outage: Google's API returned intermittent 503 UNAVAILABLE errors ("This model is currently experiencing high demand") across 12 of the trials. Because tools.py::create_fit_card relies on a live model call, every attempt in Scenario 4 hit the 503 error before reaching create_fit_card, triggering the graceful ModelUnavailable failure handler and resulting in 0 fit cards produced for that specific test block. Meanwhile, deterministic logic (Criterion 2 early-stop branch, Criterion 3 item passing, and Criterion 5 price ceiling filtering) remained 100% resilient at 5/5.
+
 
 <!-- If it made things worse, say that. Honestly reported, that earns full
      credit and is more interesting than one that worked. -->
@@ -457,7 +460,15 @@ Targeted Criterion 4. In earlier evaluation, the generated fit cards were verbos
      you did. "I ran out of time" is fine if it's true. Pretending nothing is
      left is not. -->
 
+- Criterion 1 (Matching query completes all three tools) & Criterion 4 (Fit card mentions item price):
+  - Status: Degraded to MISSED (3/5 and 0/5 respectively) during the after-improvement evaluation due to upstream infrastructure rather than agent code failure.
+  - What happened: In the after run, Google's Gemini API threw intermittent `503 UNAVAILABLE` errors ("This model is currently experiencing high demand")[cite: 5]. While our Milestone 2 failure mode handled this gracefully without crashing the CLI (retaining search results and outputting an actionable user recovery message)[cite: 1, 5], it prevented downstream generation tools (`suggest_outfit` and `create_fit_card`) from producing complete fit cards on affected attempts[cite: 5].
+  - What I would do: Implement an exponential backoff and retry mechanism with jitter inside `generate.py` around the model call for transient status codes (503, 429), or configure an automatic fallback model.
+  - Why I stopped there: Time constraints for Unit 4, and the milestone guidelines emphasize making a single targeted prompt improvement per iteration rather than restructuring the underlying HTTP adapter or retry policies.
 
+- MCP Integration & Transport Resilience:
+  - What changed: Replaced direct in-process Python calls to `search_listings()` with `call_tool("search_listings", ...)` over an external MCP server (`mcp_server.py`)[cite: 1].
+  - Did anything behave differently: Functionally, search filtering, schema inputs, and return payloads remained identical[cite: 1, 4]. However, the tool is now completely decoupled from local runtime imports. If the MCP server daemon drops or fails to start, the fallback in `agent.py` ensures the agent gracefully reverts to local evaluation rather than crashing the loop[cite: 1].
 
 <!-- ═════════════════════════════════════════════════════════════════════
 
